@@ -1,0 +1,76 @@
+﻿<Window x:Class="Work_Submit.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Work_Submit"
+        mc:Ignorable="d"
+        Title="课程大作业" Height="350" Width="525">
+    <Window.Resources>
+        <RoutedCommand x:Key="OpenFile" ></RoutedCommand>
+        <RoutedCommand x:Key="QueryXml" ></RoutedCommand>
+        <RoutedCommand x:Key="AnalysisXml" ></RoutedCommand>
+        <RoutedCommand x:Key="SaveToSql"/>
+    </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource OpenFile}" 
+                        Executed="OnOpenFile_Exedcuted" 
+                        CanExecute="OnOpenFile_CanExecute" />
+        <CommandBinding Command="{StaticResource QueryXml}" 
+                        Executed="OnQueryXml_Exedcuted" 
+                        CanExecute="OnQueryXml_CanExecute" />
+        <CommandBinding Command="{StaticResource AnalysisXml}"
+                        Executed="AnalysisXml_Executed"
+                        
+                        CanExecute="AnalysisXml_CanExedcuted"/>
+        <CommandBinding Command="{StaticResource SaveToSql}"
+                        Executed="SaveToSql_Executed"
+                        CanExecute="SaveToSql_CanExecuted"/>
+    </Window.CommandBindings>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="打开" Command="{StaticResource OpenFile}"/>
+            <MenuItem Header="查询" Command="{StaticResource QueryXml}" />
+            <MenuItem Header="解析XML"  Command="{StaticResource AnalysisXml}"/>
+            <MenuItem Header="存入数据库"  Command="{StaticResource SaveToSql}"/>
+        </Menu>
+
+        <StackPanel DockPanel.Dock="Top">
+            <DockPanel>
+                <Label Content="正则表达式：" DockPanel.Dock="Left" />
+                <TextBox Text="{Binding Pattern,UpdateSourceTrigger=PropertyChanged}" />
+            </DockPanel>
+        </StackPanel>
+
+        <UniformGrid Columns="2">
+            <GroupBox Header="打开的XML文件">
+                <TextBox Text="{Binding TargetText}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+            </GroupBox>
+            <GroupBox Header="查询结果">
+                <TextBox Text="{Binding CollectedText,Mode=OneWay}" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"  />
+            </GroupBox>
+            <GroupBox Header="读取的XML节点">
+                <!--<TextBox Text="{Binding TargetText}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />-->
+                <TreeView ItemsSource="{Binding CurrentXml.ChildNodes}">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding ChildNodes}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text=":" />
+                                <TextBlock Text="{Binding Value}" />
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </GroupBox>
+            <GroupBox Header="存入数据库的结果">
+                <TextBox Text="{Binding TargetText}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+            </GroupBox>
+        </UniformGrid>
+
+
+
+    </DockPanel>
+</Window>
