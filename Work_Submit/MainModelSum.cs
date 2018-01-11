@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Linq;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 
 namespace Work_Submit
 {
-    class MainModelSum: INotifyPropertyChanged
+    class MainModelSum : INotifyPropertyChanged
     {
+        //打开XMl文档并进行匹配
+        #region
         public string Pattern
         {
             get { return _Pattern; }
@@ -111,7 +115,10 @@ namespace Work_Submit
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aPropertyName));
         }
         public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
 
+        //解析XMl文档
+        #region
         public XmlDocument CurrentXml { get { return _CurrentXml; } set { if (_CurrentXml == value) return; _CurrentXml = value; OnPropertyChanged(nameof(CurrentXml)); } }
         private XmlDocument _CurrentXml;
         private string _FileName;
@@ -139,6 +146,135 @@ namespace Work_Submit
             _FileName = aXDocument.Root.Element("LastFile").Value;
             LoadXmlFile(_FileName);
         }
+        #endregion
+
+        //连接并存入数据库
+        #region 
+        const string ConnectionString = @"Data Source=(localdb)\Projects;Initial Catalog=Contect;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;";
+
+        public static ContactDataContext DataContext = new ContactDataContext(ConnectionString);
+
+        private string _Name;
+        public string Name
+        {
+            get { return _Name; }
+            set
+            {
+                if (_Name == value) return; _Name = value; OnPropertyChanged(nameof(Name));
+            }
+        }
+        private string _Mobile;
+        public string Mobile
+        {
+            get { return _Mobile; }
+            set
+            {
+                if (_Mobile == value) return; _Mobile = value; OnPropertyChanged(nameof(Mobile));
+            }
+        }
+        private string _Memo;
+        public string Memo
+        {
+            get { return _Memo; }
+            set
+            {
+                if (_Memo == value) return; _Memo = value; OnPropertyChanged(nameof(Memo));
+            }
+        }
+
+        private int _id;
+        public int Id
+        {
+            get { return _id; }
+            set {
+                if (_id == value)
+                    return;
+                _id = value;
+                OnPropertyChanged(nameof(Id));
+            }
+        }
+
+        public void Create_DataBase()
+        {
+            try
+            {
+                // 连接数据库引擎
+                using (ContactDataContext aDataContext1 = new ContactDataContext(ConnectionString))
+                {
+                    if (!aDataContext1.DatabaseExists())
+                    {
+                        aDataContext1.CreateDatabase();
+                        MessageBox.Show("数据库已经创建！");
+                    }
+                    else
+                    {
+                        //MessageBox.Show("数据库已经存在！");
+                    }
+                }
+                ContactDataContext aDataContext = new ContactDataContext(ConnectionString);
+                DataContext = new ContactDataContext(ConnectionString);
+                aDataContext.SubmitChanges();
+            }
+            catch (Exception msg)
+            {
+                MessageBox.Show(msg.Message);
+            }
+        }
+
+
+        public void Save_To_Database()
+        {
+            if (Name != null)
+            {
+                Create_DataBase();
+                Contact aNewContact = new Contact { Name = Name, Mobile = Mobile, Memo = Memo };
+                ContactDataContext aDataContext = new ContactDataContext(ConnectionString);
+                aDataContext.Contact.InsertOnSubmit(aNewContact);
+                aDataContext.SubmitChanges();
+                Contacts = aDataContext.Contact;
+            }
+            Update();
+        }
+
+        public void Dele_Data()
+        {
+            ContactDataContext aDataContext = new ContactDataContext(ConnectionString);
+            Contact aExistContact = (from r in aDataContext.Contact where r.Id ==Id select r).FirstOrDefault();
+            if (aExistContact != null)
+            {
+                aDataContext.Contact.DeleteOnSubmit(aExistContact);
+                aDataContext.SubmitChanges();
+                Contacts = aDataContext.Contact;
+            }
+            Update();
+        }
+
+        public void Update()
+        {
+            ContactDataContext aDataContext = new ContactDataContext(ConnectionString);
+            aDataContext.SubmitChanges();
+        }
+
+        private Table<Contact> _contacts;
+
+        public Table<Contact> Contacts
+        {
+            get {
+                ContactDataContext aDataContext = new ContactDataContext(ConnectionString);
+                return aDataContext.Contact; }
+            set {
+                if (_contacts==value)
+                    return;
+                _contacts = DataContext.Contact;
+                OnPropertyChanged(nameof(Contacts));
+            }
+        }
+
+
+
+        #endregion
+
+
 
 
 

@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Work_Submit"
         mc:Ignorable="d"
-        Title="课程大作业" Height="350" Width="525">
+        Title="课程大作业" Height="599.099" Width="771.366">
     <Window.Resources>
         <RoutedCommand x:Key="OpenFile" ></RoutedCommand>
         <RoutedCommand x:Key="QueryXml" ></RoutedCommand>
         <RoutedCommand x:Key="AnalysisXml" ></RoutedCommand>
         <RoutedCommand x:Key="SaveToSql"/>
+        <RoutedCommand x:Key="DeleData"/>
     </Window.Resources>
-
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource OpenFile}" 
                         Executed="OnOpenFile_Exedcuted" 
@@ -22,11 +22,13 @@
                         CanExecute="OnQueryXml_CanExecute" />
         <CommandBinding Command="{StaticResource AnalysisXml}"
                         Executed="AnalysisXml_Executed"
-                        
                         CanExecute="AnalysisXml_CanExedcuted"/>
         <CommandBinding Command="{StaticResource SaveToSql}"
                         Executed="SaveToSql_Executed"
                         CanExecute="SaveToSql_CanExecuted"/>
+        <CommandBinding Command="{StaticResource DeleData}"
+                        Executed="DeleData_Executed"
+                        CanExecute="DeleData_CanExecuted"/>
     </Window.CommandBindings>
 
     <DockPanel>
@@ -35,15 +37,14 @@
             <MenuItem Header="查询" Command="{StaticResource QueryXml}" />
             <MenuItem Header="解析XML"  Command="{StaticResource AnalysisXml}"/>
             <MenuItem Header="存入数据库"  Command="{StaticResource SaveToSql}"/>
+            <MenuItem Header="删除数据"  Command="{StaticResource DeleData}"/>
         </Menu>
-
         <StackPanel DockPanel.Dock="Top">
             <DockPanel>
                 <Label Content="正则表达式：" DockPanel.Dock="Left" />
                 <TextBox Text="{Binding Pattern,UpdateSourceTrigger=PropertyChanged}" />
             </DockPanel>
         </StackPanel>
-
         <UniformGrid Columns="2">
             <GroupBox Header="打开的XML文件">
                 <TextBox Text="{Binding TargetText}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
@@ -65,12 +66,25 @@
                     </TreeView.ItemTemplate>
                 </TreeView>
             </GroupBox>
-            <GroupBox Header="存入数据库的结果">
-                <TextBox Text="{Binding TargetText}" AcceptsReturn="True" TextWrapping="Wrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
+            <GroupBox Header="存入数据库">
+                <StackPanel>
+                    <Label Content="姓名：" DockPanel.Dock="Left" />
+                    <TextBox Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Content="电话：" DockPanel.Dock="Left" />
+                    <TextBox Text="{Binding Mobile,UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Content="备注：" DockPanel.Dock="Left" />
+                    <TextBox Text="{Binding Memo,UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="数据库中的数据">
+                <DataGrid ItemsSource="{Binding Contacts}" />
+            </GroupBox>
+            <GroupBox Header="删除数据库中的数据">
+                <StackPanel>
+                    <Label Content="Id：" DockPanel.Dock="Left" />
+                    <TextBox Text="{Binding Id,UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
             </GroupBox>
         </UniformGrid>
-
-
-
     </DockPanel>
 </Window>

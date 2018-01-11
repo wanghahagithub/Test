@@ -89,14 +89,28 @@ namespace Work_Submit
             e.CanExecute = true;
         }
 
-        //保存到Xml文档
+        //保存到数据库
         private void SaveToSql_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-
+            //创建数据库
+         //   _Model.Create_DataBase();
+            _Model.Save_To_Database();
         }
+
 
         //判断是否保存到Xml文档
         private void SaveToSql_CanExecuted(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        //根据Id号删除数据
+        private void DeleData_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            _Model.Dele_Data();
+        }
+
+        private void DeleData_CanExecuted(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Class="ContactDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="" Member="Contact">
+    <Type Name="Contact">
+      <Column Member="Id" AutoSync="Never" Type="System.Int32" IsReadOnly="true" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" UpdateCheck="Always" />
+      <Column Member="Name" Type="System.String" CanBeNull="false" />
+      <Column Member="Mobile" Type="System.String" CanBeNull="false" />
+      <Column Member="Memo" Type="System.String" CanBeNull="false" />
+    </Type>
+  </Table>
+</Database>
