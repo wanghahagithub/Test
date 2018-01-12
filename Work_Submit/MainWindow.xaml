@@ -13,6 +13,7 @@
         <RoutedCommand x:Key="SaveToSql"/>
         <RoutedCommand x:Key="DeleData"/>
     </Window.Resources>
+    
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource OpenFile}" 
                         Executed="OnOpenFile_Exedcuted" 
